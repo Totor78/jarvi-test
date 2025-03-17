@@ -1,13 +1,11 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { StrictMode} from 'react';
+import {createRoot} from 'react-dom/client';
 import './index.css';
 import 'semantic-ui-css/semantic.min.css'
 import App from './App';
-import dotenv from "dotenv";
-import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
-
-dotenv.config();
 
 export const client = new ApolloClient({
   uri: process.env.REACT_APP_HASURA_URI,
@@ -17,20 +15,21 @@ export const client = new ApolloClient({
   },
 });
 
+const rootElement = document.getElementById("root");
+const root = createRoot(rootElement);
 
-ReactDOM.render(
+root.render(
+      <StrictMode>
+        <ApolloProvider client={client}>
+      <Router>
+        <Routes>
+            <Route path="/" element={<App />} />
+        </Routes>
+        </Router>
+        </ApolloProvider>
+        </StrictMode>,
+      
+    );
   
-    <Router>
-      <ApolloProvider client={client}>
-      <React.StrictMode>
-        <Switch>
-            <Route exact path="/" component={App} />
-        </Switch>
-        </React.StrictMode>,
-      </ApolloProvider>
-    </Router>,
-  
-  document.getElementById("root")
-);
 
 
